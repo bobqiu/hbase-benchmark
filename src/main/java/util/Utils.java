@@ -1,14 +1,18 @@
 package util;
 
 import com.google.common.base.Charsets;
+import com.nearinfinity.honeycomb.hbase.rowkey.DataRowKey;
+import com.nearinfinity.honeycomb.mysql.Row;
 import config.ConfigConstants;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.util.Pair;
 import org.apache.log4j.Logger;
 
 import java.util.Random;
+import java.util.UUID;
 
 import static java.lang.String.format;
 
@@ -89,4 +93,31 @@ public abstract class Utils {
     public static Scan createScan(final byte[] startRowKey) {
         return new Scan(startRowKey);
     }
+
+    public static byte[] generateRowValue() {
+        return new Row(DataProvider.COL_DATA, UUID.randomUUID()).serialize();
+    }
+
+
+    /**
+     * Generates the start and stop rowkeys for a {@link Scan} range by computing a
+     * random start position and a fixed stop position
+     *
+     * @param maxRange The size of rowkey range to generate
+     * @param rowCount The maximum number of rows to scan
+     * @return A container with the start and stop rowkeys
+     */
+    public static Pair<byte[], byte[]> generateStartAndStopRows(final long maxRange, final long rowCount) {
+        long start = RANDOM.nextInt(Integer.MAX_VALUE) % rowCount;
+        long stop = start + maxRange;
+
+        log.debug(format("Generated start/stop: %d/%d", start, stop));
+
+        return new Pair<byte[],byte[]>(generateRowKey(start), generateRowKey(stop));
+    }
+
+    public static byte[] generateRowKey(final long tableId) {
+        return new DataRowKey(tableId, DataProvider.ROW_UUID).encode();
+    }
+
 }
