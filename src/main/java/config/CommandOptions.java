@@ -104,7 +104,7 @@ public abstract class CommandOptions {
                                                              ConfigConstants.ARG_TEST_GETROW + ": Gets one row from the table\n" +
                                                              ConfigConstants.ARG_TEST_SEQREAD + ": Reads every row from the table in order\n" +
                                                              ConfigConstants.ARG_TEST_SCAN + ": Scans the entire table in order\n" +
-                                                             ConfigConstants.ARG_TEST_RANDSCAN + ": Scans the table randomly with the specified row range\n" +
+                                                             ConfigConstants.ARG_TEST_RANDSCAN + ": Scans a Honeycomb table with the Person schema based on a random salary.\n" +
                                                              ConfigConstants.ARG_TEST_HCWRITE + ": Writes one Honeycomb row at a time to the table\n" +
                                                              ConfigConstants.ARG_TEST_HCRANGESCAN + ": Scans the same range of Honeycomb rows with the specified row range")
                                              .create(ConfigConstants.OPT_TEST_TYPE);

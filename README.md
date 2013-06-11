@@ -53,8 +53,9 @@ The arguments to the benchmark tool are:
                                  seqRead: Reads every row from the table
                                  in order
                                  scan: Scans the entire table in order
-                                 randomScan: Scans the table randomly with
-                                 the specified row range
+                                 randomScan: Scans a Honeycomb table with
+                                 the Person schema based on a random
+                                 salary.
                                  hcWrite: Writes one Honeycomb row at a
                                  time to the table
                                  hcRangeScan: Scans the same range of
