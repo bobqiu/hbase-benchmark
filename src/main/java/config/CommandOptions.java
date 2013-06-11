@@ -1,10 +1,10 @@
 package config;
 
-import static java.lang.String.format;
-
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+
+import static java.lang.String.format;
 
 /**
  * Responsible for defining and storing all of the available options exposed
@@ -13,18 +13,40 @@ import org.apache.commons.cli.Options;
 @SuppressWarnings("static-access")
 public abstract class CommandOptions {
 
+    public static final Options CMD_LINE_OPTS = new Options();
     private static final String ARG_NAME_TABLE = "table";
+    private static final String ARG_NAME_COLUMN_FAMILY = "column family";
     private static final String ARG_NAME_PORT = "port";
     private static final String ARG_NAME_QUORUM = "quorum";
     private static final String ARG_NAME_TIME = "time";
     private static final String ARG_NAME_TYPE = "type";
     private static final String ARG_NAME_COUNT = "count";
-
-    public static final Options CMD_LINE_OPTS = new Options();
-
     private static final String DEFAULT = "\nDefault:";
-
     static {
+        final Option indexName = OptionBuilder.withArgName(ARG_NAME_TABLE)
+                                             .hasArg()
+                                             .withDescription("SQL table ")
+                                             .create(ConfigConstants.OPT_INDEX_NAME);
+
+        final Option columnFamily = OptionBuilder.withArgName(ARG_NAME_COLUMN_FAMILY)
+                                             .hasArg()
+                                             .withDescription("Column Family ")
+                                             .create(ConfigConstants.OPT_COLUMN_FAMILY);
+
+        final Option sqlTable = OptionBuilder.withArgName(ARG_NAME_TABLE)
+                                             .hasArg()
+                                             .withDescription("SQL table ")
+                                             .create(ConfigConstants.OPT_SQL_TABLE);
+
+        final Option rowLength = OptionBuilder.withArgName(ARG_NAME_COUNT + "," + ARG_NAME_COUNT)
+                                             .hasArg()
+                                             .withDescription(format("Max row key length %s %d", DEFAULT, Config.DEFAULT_KEY_LENGTH))
+                                             .create(ConfigConstants.OPT_ROW_LENGTH);
+        final Option keyLength = OptionBuilder.withArgName(ARG_NAME_COUNT + "," + ARG_NAME_COUNT)
+                                             .hasArg()
+                                             .withDescription(format("Max row key length %s %d", DEFAULT, Config.DEFAULT_KEY_LENGTH))
+                                             .create(ConfigConstants.OPT_KEY_LENGTH);
+
         final Option rowCount = OptionBuilder.withArgName(ARG_NAME_COUNT)
                                              .hasArg()
                                              .withDescription(format("The total number of rows to process %s %d", DEFAULT, Config.DEFAULT_ROW_COUNT))
@@ -76,7 +98,7 @@ public abstract class CommandOptions {
         final Option testType = OptionBuilder.withArgName(ARG_NAME_TYPE)
                                              .isRequired(true)
                                              .hasArg(true)
-                                             .withDescription("The type of test to execute \nPossible types:\n" +
+                                             .withDescription("The type of test to execute *required* \nPossible types:\n" +
                                                              ConfigConstants.ARG_TEST_BATCHWRITE + ": Writes a batch of rows to the table\n" +
                                                              ConfigConstants.ARG_TEST_SEQWRITE + ": Writes one row at a time to the table in order\n" +
                                                              ConfigConstants.ARG_TEST_GETROW + ": Gets one row from the table\n" +
@@ -90,7 +112,7 @@ public abstract class CommandOptions {
         final Option execType = OptionBuilder.withArgName(ARG_NAME_TYPE)
                                              .hasArg(true)
                                              .isRequired(true)
-                                             .withDescription("The type of execution used to run the test \nPossible types:\n" +
+                                             .withDescription("The type of execution used to run the test *required* \nPossible types:\n" +
                                                              ConfigConstants.ARG_EXEC_TIMED + ": Executes the test for a minimum period of time\n" +
                                                              ConfigConstants.ARG_EXEC_COUNT + ": Executes the test over a fixed count")
                                              .create(ConfigConstants.OPT_EXEC_TYPE);
@@ -105,7 +127,12 @@ public abstract class CommandOptions {
                                              .withDescription(format("The minimum amount of time to execute the test type (in milliseconds) %s %d", DEFAULT, Config.DEFAULT_EXECUTION_TIME_MS))
                                              .create(ConfigConstants.OPT_EXEC_TIME);
 
+        CMD_LINE_OPTS.addOption(sqlTable);
+        CMD_LINE_OPTS.addOption(columnFamily);
+        CMD_LINE_OPTS.addOption(indexName);
         CMD_LINE_OPTS.addOption(rowCount);
+        CMD_LINE_OPTS.addOption(keyLength);
+        CMD_LINE_OPTS.addOption(rowLength);
         CMD_LINE_OPTS.addOption(writeWAL);
         CMD_LINE_OPTS.addOption(autoFlush);
         CMD_LINE_OPTS.addOption(scanRange);

@@ -16,6 +16,30 @@ public abstract class CommandParser {
     public static Config parseCommandLine(final CommandLine line) {
         final Config config = new Config();
 
+        if (line.hasOption(ConfigConstants.OPT_KEY_LENGTH)) {
+            String[] optionValue = line.getOptionValue(ConfigConstants.OPT_KEY_LENGTH).split(",");
+            config.setMinKeyLength(Integer.parseInt(optionValue[0]));
+            config.setMaxKeyLength(Integer.parseInt(optionValue[1]));
+        }
+
+        if (line.hasOption(ConfigConstants.OPT_ROW_LENGTH)) {
+            String[] optionValue = line.getOptionValue(ConfigConstants.OPT_ROW_LENGTH).split(",");
+            config.setMinRowLength(Integer.parseInt(optionValue[0]));
+            config.setMaxRowLength(Integer.parseInt(optionValue[1]));
+        }
+
+        if( line.hasOption(ConfigConstants.OPT_SQL_TABLE) ) {
+            config.setSqlTable(line.getOptionValue(ConfigConstants.OPT_SQL_TABLE));
+        }
+
+        if( line.hasOption(ConfigConstants.OPT_COLUMN_FAMILY) ) {
+            config.setSqlTable(line.getOptionValue(ConfigConstants.OPT_COLUMN_FAMILY));
+        }
+
+        if( line.hasOption(ConfigConstants.OPT_INDEX_NAME) ) {
+            config.setIndexName(line.getOptionValue(ConfigConstants.OPT_INDEX_NAME));
+        }
+
         if( line.hasOption(ConfigConstants.OPT_ROW_COUNT) ) {
             config.setRowCount(Long.parseLong(line.getOptionValue(ConfigConstants.OPT_ROW_COUNT)));
         }

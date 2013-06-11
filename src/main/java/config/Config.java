@@ -9,14 +9,12 @@ public final class Config {
 
     public static final long DEFAULT_ROW_COUNT = 5000;
     public static final long DEFAULT_SCAN_RANGE_ROWS = 100;
-
     public static final int DEFAULT_SCAN_CACHE_ROWS = 100;
     public static final int DEFAULT_RUN_TIMES = 1;
     public static final int DEFAULT_EXECUTION_TIME_MS = 5000;
-
     public static final String DEFAULT_ZOOKEEPER_QUORUM = "localhost";
     public static final int DEFAULT_ZOOKEEPER_CLIENTPORT = 2181;
-
+    public static final int DEFAULT_KEY_LENGTH = 380;
     private String testType = "";
     private String execType = "";
     private String toolTable = ConfigConstants.TABLE_NAME;
@@ -31,6 +29,13 @@ public final class Config {
     private boolean WALEnabled = false;
     private boolean autoFlushEnabled = false;
     private boolean deleteTable = false;
+    private int maxKeyLength = DEFAULT_KEY_LENGTH;
+    private int minKeyLength = DEFAULT_KEY_LENGTH;
+    private int maxRowLength = DEFAULT_KEY_LENGTH;
+    private int minRowLength = DEFAULT_KEY_LENGTH;
+    private String sqlTable;
+    private String indexName;
+    private String columnFamily = "a";
 
     public boolean isAutoFlushEnabled() {
         return autoFlushEnabled;
@@ -81,7 +86,7 @@ public final class Config {
     }
 
     public int getScanCount() {
-        if( scanCount == -1 ) {
+        if (scanCount == -1) {
             return (int) (rowCount / scanRange);
         }
         return scanCount;
@@ -151,7 +156,6 @@ public final class Config {
         this.rowCount = rowCount;
     }
 
-
     @Override
     public String toString() {
         return Objects.toStringHelper(this.getClass())
@@ -169,5 +173,61 @@ public final class Config {
                 .add("Zookeeper quorum", zkQuorum)
                 .add("Zookeeper client port", zkClientPort)
                 .toString();
+    }
+
+    public int getMaxKeyLength() {
+        return maxKeyLength;
+    }
+
+    public void setMaxKeyLength(int keyLength) {
+        this.maxKeyLength = keyLength;
+    }
+
+    public int getMinKeyLength() {
+        return minKeyLength;
+    }
+
+    public void setMinKeyLength(int minKeyLength) {
+        this.minKeyLength = minKeyLength;
+    }
+
+    public int getMaxRowLength() {
+        return maxRowLength;
+    }
+
+    public void setMaxRowLength(int maxRowLength) {
+        this.maxRowLength = maxRowLength;
+    }
+
+    public int getMinRowLength() {
+        return minRowLength;
+    }
+
+    public void setMinRowLength(int minRowLength) {
+        this.minRowLength = minRowLength;
+    }
+
+    public String getSqlTable() {
+        return sqlTable;
+    }
+
+    public void setSqlTable(String sqlTable) {
+        this.sqlTable = sqlTable;
+    }
+
+    public String getIndexName() {
+        return indexName;
+    }
+
+    public void setIndexName(String indexName) {
+        this.indexName = indexName;
+    }
+
+    public String getColumnFamily() {
+        return columnFamily;
+    }
+
+    public void setColumnFamily(String columnFamily) {
+        this.columnFamily = columnFamily;
     }
 }

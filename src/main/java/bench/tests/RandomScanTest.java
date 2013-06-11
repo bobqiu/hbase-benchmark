@@ -1,23 +1,18 @@
 package bench.tests;
 
-import static java.lang.String.format;
-
-import java.io.IOException;
-
+import com.nearinfinity.honeycomb.hbase.HBaseOperations;
+import config.Config;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.util.Pair;
 import org.apache.log4j.Logger;
-
+import util.DataProvider;
 import util.Utils;
 
-import com.nearinfinity.honeycomb.hbase.HBaseOperations;
-
-import config.Config;
+import java.io.IOException;
 
 /**
  *  Represents a {@link Scan} over a random, fixed range of rowkeys contained
@@ -30,53 +25,32 @@ public final class RandomScanTest implements PerformanceTest {
     public void runTest(final HTableInterface table, final Config appConfig, final DescriptiveStatistics stats) {
         final long scanRange = appConfig.getScanRange();
         final long scanCount = appConfig.getScanCount();
-
-        long totalCreationTime = 0;
-        long totalScanTime = 0;
-
-        log.info(format("Performing %d random table scans with potentially %d rows each...", scanCount, scanRange));
-
         // Run scans for the specified number of times
-        for(int i = 1; i <= scanCount; i++) {
-            log.debug(format("\nRunning scan number: %d", i));
-
-            long startTime = System.currentTimeMillis();
-            final Pair<byte[], byte[]> startAndStopRow = Utils.generateStartAndStopRows(scanRange, appConfig.getRowCount());
-
-            final Scan scan = Utils.createScan(startAndStopRow.getFirst(), startAndStopRow.getSecond());
+        for (int i = 1; i <= scanCount; i++) {
+            int i1 = Utils.RANDOM.nextInt(DataProvider.QUERY_KEYS.length);
+            byte[] startRowKey = DataProvider.QUERY_KEYS[i1];
+            final Scan scan = Utils.createScan(startRowKey);
             scan.setCaching(appConfig.getScanCache());
-
-            log.debug(format("Scan range [%s, %s]",
-                    Utils.generateHexString(startAndStopRow.getFirst()),
-                    Utils.generateHexString(startAndStopRow.getSecond())));
-
-            totalCreationTime += System.currentTimeMillis() - startTime;
-
-
-            startTime = System.currentTimeMillis();
             ResultScanner scanner = HBaseOperations.getScanner(table, scan);
+
             int resultCount = 0;
 
             try {
-                // Count the number of rows that the scanner has
-                for (Result rr = null; (rr = scanner.next()) != null;) {
+                for (int index = 0; index < scanRange; index++) {
+                    Result rr = scanner.next();
+                    if (rr == null) {
+                        break;
+                    }
                     resultCount++;
                 }
+
             } catch (IOException e) {
                 log.error("Error occurred while processing scanner results", e);
             }
 
-            log.debug(format("Scan returned %d rows", resultCount));
             stats.addValue(resultCount);
 
             IOUtils.closeQuietly(scanner);
-
-            totalScanTime += System.currentTimeMillis() - startTime;
         }
-
-        log.debug(format("Total scan creation time: ms", totalCreationTime));
-        log.debug(format("Total scan execution time: ms", totalScanTime));
-
-        Utils.displayStatistics(stats, "Scanned Rows", "count");
     }
 }

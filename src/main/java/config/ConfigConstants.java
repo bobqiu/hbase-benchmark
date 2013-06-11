@@ -6,7 +6,7 @@ package config;
 public abstract class ConfigConstants {
 
     public static final String COLUMN_QUAL = "col";
-    public static final String COLUMN_FAMILY = "nic";
+    public static final String COLUMN_FAMILY = "a";
     public static final String TABLE_NAME = "hhbench";
 
 
@@ -33,6 +33,10 @@ public abstract class ConfigConstants {
     public static final String OPT_ZK_CLIENTPORT = "zkPort";
 
     public static final String OPT_TOOL_TABLE = "toolTable";
+    public static final String OPT_KEY_LENGTH = "keyLength";
+    public static final String OPT_ROW_LENGTH = "rowLength";
+    public static final String OPT_SQL_TABLE = "sqlTable";
+    public static final String OPT_INDEX_NAME = "indexName";
 
 
     // Arguments used to specify the test type
@@ -48,6 +52,7 @@ public abstract class ConfigConstants {
     // Arguments used to specify the test execution type
     public static final String ARG_EXEC_TIMED = "timed";
     public static final String ARG_EXEC_COUNT = "count";
+    public static final String OPT_COLUMN_FAMILY = "columnFamily";
 
 
     private ConfigConstants() {

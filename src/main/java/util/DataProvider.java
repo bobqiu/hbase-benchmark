@@ -1,12 +1,7 @@
 package util;
 
-import java.nio.ByteBuffer;
-import java.util.Map;
-import java.util.UUID;
-
 import bench.tests.GetRowTest;
 import bench.tests.PerformanceTest;
-
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -17,6 +12,10 @@ import com.nearinfinity.honeycomb.mysql.gen.QueryType;
 import com.nearinfinity.honeycomb.mysql.schema.ColumnSchema;
 import com.nearinfinity.honeycomb.mysql.schema.IndexSchema;
 import com.nearinfinity.honeycomb.mysql.schema.TableSchema;
+
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Container class used to provide test data to {@link PerformanceTest} implementations
@@ -81,7 +80,7 @@ public abstract class DataProvider {
      */
     public static QueryKey HC_QUERY_KEY = new QueryKey(HC_INDEX_NAME, QueryType.EXACT_KEY,
             ImmutableMap.<String, ByteBuffer>of(COL_NAMES[0], ByteBuffer.wrap("Penelope".getBytes(Charsets.UTF_8))));
-
+    public static byte[][] QUERY_KEYS;
 
     private DataProvider() {
 

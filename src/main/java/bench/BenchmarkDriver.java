@@ -1,25 +1,17 @@
 package bench;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static java.lang.String.format;
-
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
+import bench.tests.*;
+import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
+import config.CommandOptions;
+import config.CommandParser;
+import config.Config;
+import config.ConfigConstants;
+import org.apache.commons.cli.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.MasterNotRunningException;
-import org.apache.hadoop.hbase.ZooKeeperConnectionException;
+import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.HTableInterface;
@@ -27,26 +19,16 @@ import org.apache.hadoop.hbase.io.encoding.DataBlockEncoding;
 import org.apache.hadoop.hbase.io.hfile.Compression.Algorithm;
 import org.apache.hadoop.hbase.regionserver.StoreFile.BloomType;
 import org.apache.log4j.Logger;
-
+import util.DataProvider;
+import util.HoneycombQueryGenerator;
 import util.Utils;
-import bench.tests.BatchWriteTest;
-import bench.tests.GetRowTest;
-import bench.tests.HoneycombRangeScanTest;
-import bench.tests.HoneycombWriteTest;
-import bench.tests.NullTest;
-import bench.tests.PerformanceTest;
-import bench.tests.RandomScanTest;
-import bench.tests.ScanTest;
-import bench.tests.SequentialReadTest;
-import bench.tests.SequentialWriteTest;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableMap;
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
-import config.CommandOptions;
-import config.CommandParser;
-import config.Config;
-import config.ConfigConstants;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static java.lang.String.format;
 
 /**
  * The main entry point of the benchmark tool responsible for setting up application
@@ -115,6 +97,7 @@ public final class BenchmarkDriver {
     public void setupToolTable() {
         HBaseAdmin admin = null;
 
+        DataProvider.QUERY_KEYS = HoneycombQueryGenerator.generate(appConfig);
         try {
             admin = new HBaseAdmin(config);
 
